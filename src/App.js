@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react"
+import {
+  BrowserRouter as Router,
+  Routes, Route
+} from "react-router-dom"
+import coinService from "./services/coins"
+import NavBar from "./components/NavBar";
+import Home from "./components/Home";
+import Footer from "./components/Footer";
+import Coins from "./components/Coins"
 
-function App() {
+const App = () => {
+  const [coins, setCoins] = useState([])
+
+  useEffect(() => {
+    coinService.getAll().then(res => setCoins(res))
+  }, [])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home topCoins={coins.slice(0, 10)}/>} />
+        <Route path="/coins" element={<Coins coins={coins}/>} />
+      </Routes>
+      <Footer />
+    </Router>
+  )
 }
 
 export default App;
